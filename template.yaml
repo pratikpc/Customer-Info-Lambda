@@ -1,0 +1,103 @@
+# https://github.com/awslabs/serverless-application-model/blob/develop/versions/2016-10-31.md
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: hellword-api
+
+Globals:
+  Function:
+    Timeout: 60
+Parameters:
+  StageName:
+    Type: String
+    Default: Prod
+  FirebaseProjectName:
+    Type: String
+
+Resources:
+  CustomerTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: Customers
+      PrimaryKey:
+        Name: email
+        Type: String
+  ApiHttpGatewayApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 200
+        ThrottlingRateLimit: 500
+      Auth:
+        Authorizers:
+          FirebaseAuthorizer:
+            IdentitySource: $request.header.Authorization # This should be the default option
+            JwtConfiguration:
+              audience:
+                - !Ref FirebaseProjectName
+              issuer: !Sub https://securetoken.google.com/${FirebaseProjectName}
+        DefaultAuthorizer: FirebaseAuthorizer
+      StageName: !Ref StageName
+  CustomerListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.default
+      CodeUri: functions/customerlist/dist
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref CustomerTable
+      Events:
+        Customers:
+          Type: HttpApi
+          Properties:
+            Description: Return the list of all customers
+            ApiId: !Ref ApiHttpGatewayApi
+            Path: /customers
+            Method: GET
+  CustomerAddFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.default
+      CodeUri: functions/customeradd/dist
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref CustomerTable
+      Events:
+        Customers:
+          Type: HttpApi
+          Properties:
+            Description: Add/update customer data
+            ApiId: !Ref ApiHttpGatewayApi
+            Path: /customers
+            Method: PUT
+
+  CustomerQueryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.default
+      CodeUri: functions/customerquery/dist
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref CustomerTable
+      Events:
+        Customers:
+          Type: HttpApi
+          Properties:
+            Description: Get a single user data
+            ApiId: !Ref ApiHttpGatewayApi
+            Path: /customer
+            Method: GET
+
+
+Outputs:
+  LambdaRestApi:
+    Description: URL for application
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Export:
+      Name: LambdaRestApi
+  HttpApiId:
+    Description: Api id of HttpApi
+    Value:
+      Ref: HttpApi
