@@ -91,7 +91,46 @@ Resources:
             Method: GET
 
 
+
+  WebsiteHosting:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: WebsitePolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref WebsiteHosting
+                - /*
+      Bucket: !Ref WebsiteHosting
+
 Outputs:
+  WebsiteURL:
+    Value: !GetAtt 
+      - WebsiteHosting
+      - WebsiteURL
+    Description: URL for website hosted on S3
+  WebsiteHostingSecureURL:
+    Value: !Join 
+      - ''
+      - - 'https://'
+        - !GetAtt 
+          - WebsiteHosting
+          - DomainName
+    Description: Name of S3 bucket to hold website content
   LambdaRestApi:
     Description: URL for application
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
