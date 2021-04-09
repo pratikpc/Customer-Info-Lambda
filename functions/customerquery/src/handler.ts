@@ -11,7 +11,7 @@ export default async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyRes
 
   const response = await client.send(
     new QueryCommand({
-      TableName: 'Customers',
+      TableName: String(process.env.TABLE_NAME || 'Customers'),
       KeyConditionExpression: 'email = :email',
       ExpressionAttributeValues: {
         ':email': { S: email },

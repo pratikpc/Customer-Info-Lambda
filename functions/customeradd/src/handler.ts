@@ -15,7 +15,7 @@ export default async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyRes
 
   const results = await client.send(
     new UpdateItemCommand({
-      TableName: 'Customers',
+      TableName: String(process.env.TABLE_NAME || 'Customers'),
       Key: { email: { S: email } },
       ReturnValues: 'ALL_NEW',
       UpdateExpression: 'SET customer_data = :customer_data',

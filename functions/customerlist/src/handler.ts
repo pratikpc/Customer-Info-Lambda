@@ -5,7 +5,7 @@ import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
 
 const client = new DynamoDBClient({});
 export default async (): Promise<APIGatewayProxyResult> => {
-  const response = await client.send(new ScanCommand({ TableName: 'Customers' }));
+  const response = await client.send(new ScanCommand({ TableName: String(process.env.TABLE_NAME || 'Customers') }));
   const results = (response.Items || [])
     .map(({ customer_data }) => customer_data || { S: '{}' })
     .map(({ S }) => S || '{}')

@@ -54,6 +54,10 @@ Resources:
             ApiId: !Ref ApiHttpGatewayApi
             Path: /customers
             Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CustomerTable
+
   CustomerAddFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -71,6 +75,9 @@ Resources:
             ApiId: !Ref ApiHttpGatewayApi
             Path: /customer
             Method: PUT
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CustomerTable
 
   CustomerQueryFunction:
     Type: AWS::Serverless::Function
@@ -89,6 +96,9 @@ Resources:
             ApiId: !Ref ApiHttpGatewayApi
             Path: /customer
             Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CustomerTable
 
   WebsiteHosting:
     Type: AWS::S3::Bucket
