@@ -1,17 +1,14 @@
-import type {
-  APIGatewayEventRequestContextWithAuthorizer,
-  APIGatewayProxyResultV2,
-} from 'aws-lambda';
+import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 
 // Import required AWS SDK clients and commands for Node.js
 import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
 
 const client = new DynamoDBClient({});
-export default async (
-  _event: never,
-  context: APIGatewayEventRequestContextWithAuthorizer<any>
-): Promise<APIGatewayProxyResultV2> => {
-  const email = (context.authorizer || { email: 'email' }).email || 'email';
+export default async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
+  const jwt = (event.requestContext.authorizer || { jwt: { claims: {} } }).jwt;
+  const claims = jwt.claims || { email: 'email' };
+  const email = String(claims['email'] || 'email');
+
   const response = await client.send(
     new QueryCommand({
       TableName: 'Customers',
