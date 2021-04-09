@@ -117,3 +117,4 @@ dist
 
 .aws-sam/
 package-lock.json
+samconfig.toml
