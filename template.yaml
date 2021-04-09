@@ -50,7 +50,7 @@ Resources:
         Customers:
           Type: HttpApi
           Properties:
-            Description: Return the list of all customers
+            # Description: Return the list of all customers
             ApiId: !Ref ApiHttpGatewayApi
             Path: /customers
             Method: GET
@@ -67,9 +67,9 @@ Resources:
         Customers:
           Type: HttpApi
           Properties:
-            Description: Add/update customer data
+            # Description: Add/update customer data
             ApiId: !Ref ApiHttpGatewayApi
-            Path: /customers
+            Path: /customer
             Method: PUT
 
   CustomerQueryFunction:
@@ -85,12 +85,10 @@ Resources:
         Customers:
           Type: HttpApi
           Properties:
-            Description: Get a single user data
+            # Description: Get a single user data
             ApiId: !Ref ApiHttpGatewayApi
             Path: /customer
             Method: GET
-
-
 
   WebsiteHosting:
     Type: AWS::S3::Bucket
@@ -116,27 +114,26 @@ Resources:
                 - !Ref WebsiteHosting
                 - /*
       Bucket: !Ref WebsiteHosting
-
 Outputs:
   WebsiteURL:
-    Value: !GetAtt 
+    Value: !GetAtt
       - WebsiteHosting
       - WebsiteURL
     Description: URL for website hosted on S3
   WebsiteHostingSecureURL:
-    Value: !Join 
+    Value: !Join
       - ''
       - - 'https://'
-        - !GetAtt 
+        - !GetAtt
           - WebsiteHosting
           - DomainName
     Description: Name of S3 bucket to hold website content
   LambdaRestApi:
     Description: URL for application
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub 'https://${ApiHttpGatewayApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/${StageName}/'
     Export:
       Name: LambdaRestApi
   HttpApiId:
     Description: Api id of HttpApi
     Value:
-      Ref: HttpApi
+      Ref: ApiHttpGatewayApi
