@@ -50,7 +50,7 @@ Resources:
         - DynamoDBReadPolicy:
             TableName: !Ref CustomerTable
       Events:
-        Customers:
+        Gateway:
           Type: HttpApi
           Properties:
             # Description: Return the list of all customers
@@ -71,7 +71,7 @@ Resources:
         - DynamoDBWritePolicy:
             TableName: !Ref CustomerTable
       Events:
-        Customers:
+        Gateway:
           Type: HttpApi
           Properties:
             # Description: Add/update customer data
@@ -92,7 +92,7 @@ Resources:
         - DynamoDBReadPolicy:
             TableName: !Ref CustomerTable
       Events:
-        Customers:
+        Gateway:
           Type: HttpApi
           Properties:
             # Description: Get a single user data
