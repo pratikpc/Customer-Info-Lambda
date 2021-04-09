@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "incremental": true, 
+    "incremental": true,
     "target": "esnext",
     "module": "commonjs",
     "sourceMap": true,
-    "strict": true, 
+    "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
@@ -14,18 +14,16 @@
     "alwaysStrict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true, 
-    "noFallthroughCasesInSwitch": true, 
-    "noUncheckedIndexedAccess": true, 
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
     "moduleResolution": "node",
     "baseUrl": ".",
     "esModuleInterop": true,
-    "skipLibCheck": true, 
-    "forceConsistentCasingInFileNames": true ,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "paths": {}
   },
-  "include": [
-    "./**/*"
-  ]
+  "include": ["./**/*"]
 }
