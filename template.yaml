@@ -12,12 +12,15 @@ Parameters:
     Default: Prod
   FirebaseProjectName:
     Type: String
+  CustomerTableName:
+    Type: String
+    Default: Customers
 
 Resources:
   CustomerTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
-      TableName: Customers
+      TableName: !Ref CustomerTableName
       PrimaryKey:
         Name: email
         Type: String
