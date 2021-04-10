@@ -35,7 +35,6 @@ CMD [ "sleep", "infinity" ]
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
-ARG AWS_SAM_VER==1.12.0
 # Add AWS CLIs
 # Disable Telemetry
 ENV SAM_CLI_TELEMETRY 0
@@ -52,7 +51,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     rm -rf ./awscliv2.zip \
     && echo "Testing AWS installation" \
     && aws --version \
-    && pip3 install aws-sam-cli=${AWS_SAM_VER} \
+    && pip3 install aws-sam-cli \
     && echo "Testing AWS SAM installation" \
     && sam --version \
 # Use Nano as editor
