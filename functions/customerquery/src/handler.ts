@@ -5,13 +5,13 @@ import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
 
 const client = new DynamoDBClient({});
 export default async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
-  const jwt = (event.requestContext.authorizer || { jwt: { claims: {} } }).jwt;
-  const claims = jwt.claims || { email: 'email' };
-  const email = String(claims['email'] || 'email');
+  const jwt = event.requestContext.authorizer?.jwt;
+  const claims = jwt?.claims;
+  const email = String(claims?.['email'] || 'email');
 
   const response = await client.send(
     new QueryCommand({
-      TableName: String(process.env.TABLE_NAME || 'Customers'),
+      TableName: String(process.env['TABLE_NAME'] || 'Customers'),
       KeyConditionExpression: 'email = :email',
       ExpressionAttributeValues: {
         ':email': { S: email },

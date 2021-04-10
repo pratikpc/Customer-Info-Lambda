@@ -6,16 +6,16 @@ import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 const client = new DynamoDBClient({});
 
 export default async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
-  const jwt = (event.requestContext.authorizer || { jwt: { claims: {} } }).jwt;
-  const claims = jwt.claims || { email: 'email' };
-  const email = String(claims['email'] || 'email');
+  const jwt = event.requestContext.authorizer?.jwt;
+  const claims = jwt?.claims;
+  const email = String(claims?.['email'] || 'email');
 
   const customer_data = JSON.parse(event.body || '{}');
   customer_data['email'] = email;
 
   const results = await client.send(
     new UpdateItemCommand({
-      TableName: String(process.env.TABLE_NAME || 'Customers'),
+      TableName: String(process.env['TABLE_NAME'] || 'Customers'),
       Key: { email: { S: email } },
       ReturnValues: 'ALL_NEW',
       UpdateExpression: 'SET customer_data = :customer_data',
