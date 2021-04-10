@@ -15,6 +15,13 @@ Parameters:
   CustomerTableName:
     Type: String
     Default: Customers
+  # The sender email must be verified
+  # This email sends the notification
+  VerifiedSenderEmail:
+    Type: String
+  # The destination email to notify
+  DestinationEmailToNotify:
+    Type: String
 
 Resources:
   CustomerTable:
@@ -102,6 +109,27 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref CustomerTable
+
+  NewRecordNotification:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.default
+      CodeUri: functions/newrecordnotification/dist
+      Runtime: nodejs14.x
+      Policies:
+        - SESCrudPolicy:
+            IdentityName: !Ref VerifiedSenderEmail
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt CustomerTable.StreamArn
+            BatchSize: 100
+            StartingPosition: TRIM_HORIZON
+      Environment:
+        Variables:
+          SENDER_EMAIL_VERIFIED: !Ref VerifiedSenderEmail
+          DESTINATION_EMAIL: !Ref DestinationEmailToNotify
 
   WebsiteHosting:
     Type: AWS::S3::Bucket
