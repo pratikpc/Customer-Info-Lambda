@@ -68,11 +68,11 @@ Resources:
         Variables:
           TABLE_NAME: !Ref CustomerTable
 
-  CustomerAddFunction:
+  CustomerUpsertFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: handler.default
-      CodeUri: functions/customeradd/dist
+      CodeUri: functions/customerupsert/dist
       Runtime: nodejs14.x
       Policies:
         - DynamoDBWritePolicy:
