@@ -110,11 +110,11 @@ Resources:
         Variables:
           TABLE_NAME: !Ref CustomerTable
 
-  NewRecordNotification:
+  RecordChangeNotification:
     Type: AWS::Serverless::Function
     Properties:
       Handler: handler.default
-      CodeUri: functions/newrecordnotification/dist
+      CodeUri: functions/recordchangenotification/dist
       Runtime: nodejs14.x
       Policies:
         - SESCrudPolicy:
