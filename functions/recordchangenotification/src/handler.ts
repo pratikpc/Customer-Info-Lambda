@@ -10,7 +10,8 @@ function ExtractEmails(records: DynamoDBRecord[], eventT: 'INSERT' | 'REMOVE') {
   const insertions = records.filter(({ eventName }) => eventName === eventT);
   console.log('Records', eventT, 'are', insertions);
   if (insertions.length === 0) {
-    throw new Error(`No items ${eventT}`);
+    console.log(`No items ${eventT}`);
+    return [];
   }
 
   const emails = insertions
@@ -20,7 +21,8 @@ function ExtractEmails(records: DynamoDBRecord[], eventT: 'INSERT' | 'REMOVE') {
 
   console.log(eventT, 'users are ', emails);
   if (emails.length === 0) {
-    throw new Error('No users added/removed');
+    console.log(`No users ${eventT}`);
+    return [];
   }
   return emails;
 }
@@ -35,7 +37,9 @@ export default async (event: DynamoDBStreamEvent): Promise<string> => {
 
     const newUserEmails = ExtractEmails(event.Records, 'INSERT');
     const removedUserEmails = ExtractEmails(event.Records, 'REMOVE');
-
+    if(newUserEmails.length === 0 && removedUserEmails.length === 0) {
+      return "No insertions or deletions";
+    }
     await client.send(
       new SendEmailCommand({
         Destination: {
