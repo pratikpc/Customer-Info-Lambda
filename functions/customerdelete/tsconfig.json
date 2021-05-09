@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "esnext",
+    "module": "commonjs",
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {}
+  },
+  "include": ["./**/*"]
+}

@@ -56,6 +56,16 @@ Resources:
               issuer: !Sub https://securetoken.google.com/${FirebaseProjectName}
         DefaultAuthorizer: FirebaseAuthorizer
       StageName: !Ref StageName
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowHeaders:
+          - "*"
+        AllowMethods:
+          - "*"
+        MaxAge: 600
+        # AllowCredentials: True
+
   CustomerListFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -115,6 +125,27 @@ Resources:
             ApiId: !Ref ApiHttpGatewayApi
             Path: /customer
             Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CustomerTable
+  
+  CustomerDeleteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.default
+      CodeUri: functions/customerdelete/dist
+      Runtime: nodejs14.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CustomerTable
+      Events:
+        Gateway:
+          Type: HttpApi
+          Properties:
+            # Description: Get a single user data
+            ApiId: !Ref ApiHttpGatewayApi
+            Path: /customer
+            Method: DELETE
       Environment:
         Variables:
           TABLE_NAME: !Ref CustomerTable
